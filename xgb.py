@@ -6,7 +6,7 @@ import xgboost as xgb
 
 def get_params():
     params = {}
-    params["objective"] = "reg:linear"
+    params["objective"] = "binary:logistic"
     params["booster"] = "gbtree"
     params["eta"] = 0.1
     params["min_child_weight"] = 1 
@@ -14,13 +14,13 @@ def get_params():
     params["subsample"] = 1 
     params["colsample_bytree"] = 1 
     params["silent"] = 1
-    params["max_depth"] = 5 
+    params["max_depth"] = 6
     plst = list(params.items())
     return plst
 
 
 # train sample
-train_sample =  pd.read_csv('../data/label_sample.csv')
+train_sample =  pd.read_csv('../data/distance_sample_train.csv')
 drop_col = ['User_id','Merchant_id','Coupon_id','Date_received']
 sample_drop = train_sample.drop(drop_col,axis=1)
 feature,label = sample_drop.iloc[:,1:],sample_drop.iloc[:,0]
@@ -28,7 +28,7 @@ train_feat,valid_feat,train_label,valid_label = train_test_split(feature,label,t
 
 
 #test sample
-test_sample =  pd.read_csv('../data/test_sample.csv')
+test_sample =  pd.read_csv('../data/distance_sample_test.csv')
 test_feat = test_sample.drop(drop_col,axis=1)
 
 
@@ -43,9 +43,9 @@ xgtrain_all = xgb.DMatrix(feature, label)
 plst = get_params()
 plst += [('eval_metric', 'auc')]
 print(plst)
-watchlist = [(xgvalid, 'valid'),(xgtrain,'train')]
-xgb_num_rounds = 100
-model = xgb.train(params = plst, dtrain = xgtrain, evals = watchlist,num_boost_round = xgb_num_rounds)
+watchlist = [(xgtrain,'train'),(xgvalid, 'valid')]
+xgb_num_rounds = 150
+model = xgb.train(params = plst, dtrain = xgtrain, evals = watchlist,num_boost_round = xgb_num_rounds,early_stopping_rounds = 10)
 
 model_all = xgb.train(params = plst, dtrain = xgtrain_all, evals = watchlist,num_boost_round = xgb_num_rounds)
 
@@ -58,6 +58,7 @@ for k,v in tuples:
     
     
 #xgb.plot_importance(model)
+print "model.best_iteration: " + str(model.best_iteration)
 valid_preds = model.predict(xgvalid, ntree_limit=model.best_iteration)
 test_preds = model.predict(xgtest, ntree_limit=model.best_iteration)
 test_preds_all = model_all.predict(xgtest, ntree_limit=model.best_iteration)
