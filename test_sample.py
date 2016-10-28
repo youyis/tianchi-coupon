@@ -71,9 +71,10 @@ for i in xrange(offline.shape[0]):
     merchant.append(offline["'Merchant_id'"][i])
     coupon.append(offline["'Coupon_id'"][i])
     reciver_date.append(offline["'Date_received'"][i])
-    manjian,disrate = discount_rate(offline["'Discount_rate'"][i])
-    man_jian.append(manjian)
-    dis_rate.append(disrate)
+    #manjian,disrate = discount_rate(offline["'Discount_rate'"][i])
+    #man_jian.append(manjian)
+    #dis_rate.append(disrate)
+    dis_rate.append(offline["'Discount_rate'"][i])
     mon,tue,wed,thu,fri,sat,sun = date_to_week(offline["'Date_received'"][i])
     monday.append(mon)
     tuesday.append(tue)
@@ -92,7 +93,7 @@ label_id['User_id'] = user
 label_id['Merchant_id'] = merchant
 label_id['Coupon_id'] = coupon
 label_id['Date_received'] = reciver_date
-label_id['man_jian'] = man_jian
+#label_id['man_jian'] = man_jian
 label_id['dis_rate'] = dis_rate
 label_id['mon'] = monday
 label_id['tue'] = tuesday

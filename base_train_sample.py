@@ -83,6 +83,7 @@ user = []
 merchant =[]
 coupon = []
 reciver_date = []
+date = []
 man_jian = []
 dis_rate = []
 monday = []
@@ -92,6 +93,7 @@ thusday = []
 friday = []
 sataday = []
 sunday = []
+weekr = []
 weekd = []
 distance = []
 label = []
@@ -103,11 +105,19 @@ for i in xrange(offline.shape[0]):
         merchant.append(offline["'Merchant_id'"][i])
         coupon.append(offline["'Coupon_id'"][i])
         reciver_date.append(offline["'Date_received'"][i])
-        manjian,disrate = discount_rate(offline["'Discount_rate'"][i])
-        man_jian.append(manjian)
-        dis_rate.append(disrate)
-        week = date_to_week(offline["'Date_received'"][i])
-        weekd.append(week)
+        date.append(offline["'Date'"][i])
+        #manjian,disrate = discount_rate(offline["'Discount_rate'"][i])
+        #man_jian.append(manjian)
+        #dis_rate.append(disrate)
+        dis_rate.append(offline["'Discount_rate'"][i])
+        week_r = date_to_week(offline["'Date_received'"][i])
+        weekr.append(week_r)
+        if offline["'Date'"][i] != 'null':
+            week_d = date_to_week(offline["'Date'"][i])
+            weekd.append(week_d)
+        else:
+            weekd.append('null')
+
         #monday.append(mon)
         #tuesday.append(tue)
         #wedsday.append(wed)
@@ -133,8 +143,10 @@ label_id['User_id'] = user
 label_id['Merchant_id'] = merchant
 label_id['Coupon_id'] = coupon
 label_id['Date_received'] = reciver_date
-label_id['man_jian'] = man_jian
+label_id['date'] = date
+#label_id['man_jian'] = man_jian
 label_id['dis_rate'] = dis_rate
+label_id['weekr'] = weekr
 label_id['weekd']  = weekd
 #label_id['mon'] = monday
 #label_id['tue'] = tuesday
@@ -145,4 +157,4 @@ label_id['weekd']  = weekd
 #label_id['sun'] = sunday
 label_id['distance'] = distance
 
-label_id.to_csv('../data/base_sample.csv',index=False)
+label_id.to_csv('../data/base_sample_1027.csv',index=False)
